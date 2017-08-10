@@ -7,7 +7,7 @@ import os
 dirs = []
 with os.scandir() as base:
 	for entry in base:
-		if entry.is_dir():
+		if entry.is_dir() and entry.name != ".git":
 			dirs.append(entry.name)
 			
 for d in dirs:
