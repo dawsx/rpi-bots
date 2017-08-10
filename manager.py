@@ -11,4 +11,7 @@ with os.scandir() as base:
 			dirs.append(entry.name)
 			
 for d in dirs:
-	subprocess.Popen(["python3", "{}/main.py".format(d)])
+	try:
+		subprocess.Popen(["python3", "{}/main.py".format(d)])
+	except:
+		print("No main.py in {}", d)
