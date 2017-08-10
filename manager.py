@@ -10,3 +10,5 @@ with os.scandir() as base:
 		if entry.is_dir():
 			dirs.append(entry.name)
 			
+for d in dirs:
+	subprocess.Popen(["python3", "{}/main.py".format(d)])
