@@ -13,6 +13,8 @@ try:
 except:
 	f = open(oldcomments, 'w')
 	f.close()
+	
+base = 'https://wiki.factorio.com/api.php?'
 
 def main():
 	reddit = praw.Reddit(
@@ -27,17 +29,11 @@ def main():
 	for comment in subreddit.stream.comments():
 		com = comment.body
 		print (com)
-		matches = re.finditer("linkwiki: ([^\n]*)",com,re.I)
+		matches = re.finditer("linkwiki: ([^\n]+)",com,re.I)
+		topics = []
 		for m in matches:
 			topic = re.sub(r' ','_',"".join([x for x in m.group(1) if 31 < ord(x) < 127]))
 			topic = re.sub(r'_*$', '', topic)
-			
-			# for c in com:
-				# try:
-					# print(c, end="")
-				# except:
-					# print("#", end="")
-			print (topic)
-			print("\n----------------")
+			topics.append(topic)
 		time.sleep(2)
 main()
