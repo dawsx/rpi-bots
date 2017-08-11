@@ -23,5 +23,8 @@ for d in dirs:
 		print("No main.py in {}", d)
 		
 	procs.append(p)
+
+while True:
+	time.sleep(50)
 	
 atexit.register(cleanup)
