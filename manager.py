@@ -10,8 +10,11 @@ with os.scandir() as base:
 		if entry.is_dir() and entry.name != ".git":
 			dirs.append(entry.name)
 			
+procs = []
 for d in dirs:
 	try:
-		subprocess.Popen(["python3", "{}/main.py".format(d)])
+		p = subprocess.Popen(["python3", "{}/main.py".format(d)])
 	except:
 		print("No main.py in {}", d)
+		
+	procs.append(p)
