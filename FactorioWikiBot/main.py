@@ -8,11 +8,11 @@ import time
 
 def main():
 	reddit = praw.Reddit(
-		client_id = key,
-		client_secret = secret,
-		username = uname,
-		password = passwd,
-		user_agent = agent
+		client_id = creds.key,
+		client_secret = creds.secret,
+		username = creds.uname,
+		password = creds.passwd,
+		user_agent = creds.agent
 	)
 	subreddit = reddit.subreddit('factorio')
 
