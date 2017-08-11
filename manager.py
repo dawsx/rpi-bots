@@ -5,7 +5,8 @@ import time
 import os
 import atexit
 
-def cleanup(procs):
+procs = []
+def cleanup():
 	for p in procs:
 		p.terminate()
 		
@@ -14,8 +15,7 @@ with os.scandir() as base:
 	for entry in base:
 		if entry.is_dir() and entry.name != ".git":
 			dirs.append(entry.name)
-
-procs = []
+			
 for d in dirs:
 	try:
 		p = subprocess.Popen(["python3", "{}/main.py".format(d)])
@@ -24,4 +24,4 @@ for d in dirs:
 		
 	procs.append(p)
 	
-atexit.register(cleanup(procs))
+atexit.register(cleanup)
