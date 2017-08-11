@@ -25,6 +25,6 @@ for d in dirs:
 	procs.append(p)
 
 while True:
-	time.sleep(50)
+	time.sleep(999)
 	
 atexit.register(cleanup)
