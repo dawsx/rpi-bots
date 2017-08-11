@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-print("it worked!")
-
-while True:
-	pass
+import creds
+import praw
+import urllib
+import re
+import time
