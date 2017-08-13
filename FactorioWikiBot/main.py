@@ -5,8 +5,10 @@ import praw
 import urllib
 import re
 import time
+import wiki
 
 oldcomments = "oldcomments"
+sig = "^^I ^^am ^^a ^^bot, ^^beep ^^boop ^^| ^^Source ^^| ^^Created ^^by ^^u/thisisdada"
 try:
 	f = open(oldcomments, 'r')
 	f.close()
@@ -29,11 +31,32 @@ def main():
 	for comment in subreddit.stream.comments():
 		com = comment.body
 		print (com)
-		matches = re.finditer("linkwiki: ([^\n]+)",com,re.I)
+		matches = re.finditer("linkwiki:([^\n]+)",com,re.I)
 		topics = []
 		for m in matches:
-			topic = re.sub(r' ','_',"".join([x for x in m.group(1) if 31 < ord(x) < 127]))
-			topic = re.sub(r'_*$', '', topic)
+			topic = "".join([x for x in m.group(1) if 31 < ord(x) < 127])
+			topic = re.sub(r' *$', '', topic)
+			topic = re.sub(r'^ *', '', topic)
 			topics.append(topic)
+			
+		if len(topics) > 0:
+			numhits = 0
+			outstrs = []
+			for t in topics:
+				hitstring = wiki.query(t)
+				outstrs.append(hitstring)
+				if hitstring != -1:
+					numhits += 1
+					
+			if numhits != 0:
+				comstr = ""
+				for i in range(len(outstrs)):
+					if outstrs[i] != -1:
+						comstr += outstrs[i]
+					else:
+						comstr += "I'm sorry, I didn't find a page titled \"{}\".\n\n".format(topics[i])
+						comstr += "*****\n\n"
+			
+				print (comstr)
 		time.sleep(2)
 main()
