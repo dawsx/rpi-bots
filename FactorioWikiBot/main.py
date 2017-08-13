@@ -6,9 +6,19 @@ import urllib
 import re
 import time
 import wiki
+import logging
+import atexit
+
+logfile = "logs/fwikibot.log"
+FORMAT = '%(asctime)-15s, %(filename)s:%(levelname)s: %(message)s'
+logging.basicConfig(filename = logfile, level = logging.DEBUG, format = FORMAT)
+logging.info('Initializing bot...')
 
 oldcomments = "oldcomments"
-sig = "^^I ^^am ^^a ^^bot, ^^beep ^^boop ^^| ^^Source ^^| ^^Created ^^by ^^u/thisisdada"
+sig = "> ^^I ^^am ^^a ^^bot, ^^beep ^^boop ^^| [^^Source](https://github.com/"
+sig += "dawsx/rpi-bots/tree/master/FactorioWikiBot) ^^| ^^Created ^^by ^^u/"
+sig += "thisisdada"
+
 try:
 	f = open(oldcomments, 'r')
 	f.close()
@@ -17,6 +27,11 @@ except:
 	f.close()
 	
 base = 'https://wiki.factorio.com/api.php?'
+
+def exitfunc():
+	logging.info("Bot has shut down: {}")
+	
+atexit.register(exitfunc)
 
 def main():
 	reddit = praw.Reddit(
@@ -29,11 +44,26 @@ def main():
 	subreddit = reddit.subreddit('justasandboxforbots')
 
 	for comment in subreddit.stream.comments():
+		time.sleep(2)
+		comlist = []
+		with open(oldcomments, 'r') as f:
+			comdata = f.read()
+			comlist = comdata.split("\n")
 		com = comment.body
-		print (com)
+		comid = comment.id
+		logging.info("Processing comment {}".format(comid))
+		if comid in set(comlist):
+			logging.debug(
+				"Already processed comment {}, skipping...".format(comid))
+			continue
+		#print(comid)
+		comstr = ""
+		#print (com)
 		matches = re.finditer("linkwiki:([^\n]+)",com,re.I)
 		topics = []
 		for m in matches:
+			logging.debug(
+				"Found match on comment {}: \"{}\"".format(comid, m))
 			topic = "".join([x for x in m.group(1) if 31 < ord(x) < 127])
 			topic = re.sub(r' *$', '', topic)
 			topic = re.sub(r'^ *', '', topic)
@@ -47,6 +77,9 @@ def main():
 				outstrs.append(hitstring)
 				if hitstring != -1:
 					numhits += 1
+					logging.info("Query for \"{}\" successful".format(t))
+				else:
+					logging.info("Query for \"{}\" unsuccessful".format(t))
 					
 			if numhits != 0:
 				comstr = ""
@@ -54,9 +87,20 @@ def main():
 					if outstrs[i] != -1:
 						comstr += outstrs[i]
 					else:
-						comstr += "I'm sorry, I didn't find a page titled \"{}\".\n\n".format(topics[i])
+						comstr += "> I'm sorry, I didn't find a page titled"
+						comstr += " \"{}\".\n\n".format(topics[i])
 						comstr += "*****\n\n"
 			
-				print (comstr)
-		time.sleep(2)
+				#print (comstr + sig)
+				comment.reply(comstr + sig)
+				logging.info("Replied to comment {}".format(comid))
+				
+		if len(comlist) > 100:
+			del(comlist[0])
+		
+		comlist.append(comid)
+		with open(oldcomments, 'w') as f:
+			for c in comlist:
+				if c != "":
+					f.write(c + "\n")
 main()
