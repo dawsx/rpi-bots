@@ -77,5 +77,3 @@ def query(q):
 	ret += "*****\n\n"
 	return ret
 	
-print(query("splitters"))
-	
