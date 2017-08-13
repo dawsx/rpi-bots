@@ -47,8 +47,15 @@ def query(q):
 			start = True
 		if start:
 			if disambig:
-				pstring += "> **This is a disambiguation page.**\n"
-				break
+				if title == "Chests" or title == "Ammunition":
+					pstring += "> *This is a disambiguation page.*\n"
+					break
+				else:
+					pstring += "> " + html.unescape(l)
+					pstring += "\n"
+					if re.search("</text>", pstring):
+						pstring = re.sub("</text>", "", pstring)
+						break
 			elif lc < maxlines:
 				lc += 1
 				pstring += "> " + html.unescape(l)
@@ -69,4 +76,6 @@ def query(q):
 		ret += '{}\n'.format(pstring)
 	ret += "*****\n\n"
 	return ret
+	
+print(query("splitters"))
 	

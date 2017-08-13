@@ -96,8 +96,6 @@ def main():
 				comment.reply(comstr + sig)
 				logging.info("Replied to comment {}".format(comid))
 				
-		if len(comlist) > 100:
-			del(comlist[0])
 		
 		comlist.append(comid)
 		with open(oldcomments, 'w') as f:
