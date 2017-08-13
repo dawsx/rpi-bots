@@ -16,7 +16,7 @@ logging.basicConfig(filename = logfile, level = logging.DEBUG, format = FORMAT)
 logging.info('Initializing bot...')
 
 oldcomments = mydir + "oldcomments"
-sig = "> ^^I ^^am ^^a ^^bot, ^^beep ^^boop ^^| [^^Source](https://github.com/"
+sig = "^^I ^^am ^^a ^^bot, ^^beep ^^boop ^^| [^^Source](https://github.com/"
 sig += "dawsx/rpi-bots/tree/master/FactorioWikiBot) ^^| ^^Created ^^by ^^u/"
 sig += "thisisdada"
 
@@ -42,7 +42,7 @@ def main():
 		password = creds.passwd,
 		user_agent = creds.agent
 	)
-	subreddit = reddit.subreddit('justasandboxforbots')
+	subreddit = reddit.subreddit('factorio')
 
 	for comment in subreddit.stream.comments():
 		time.sleep(2)
