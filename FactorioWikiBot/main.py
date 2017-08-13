@@ -9,12 +9,13 @@ import wiki
 import logging
 import atexit
 
-logfile = "logs/fwikibot.log"
+mydir = "FactorioWikiBot/"
+logfile = mydir + "logs/fwikibot.log"
 FORMAT = '%(asctime)-15s, %(filename)s:%(levelname)s: %(message)s'
 logging.basicConfig(filename = logfile, level = logging.DEBUG, format = FORMAT)
 logging.info('Initializing bot...')
 
-oldcomments = "oldcomments"
+oldcomments = mydir + "oldcomments"
 sig = "> ^^I ^^am ^^a ^^bot, ^^beep ^^boop ^^| [^^Source](https://github.com/"
 sig += "dawsx/rpi-bots/tree/master/FactorioWikiBot) ^^| ^^Created ^^by ^^u/"
 sig += "thisisdada"
