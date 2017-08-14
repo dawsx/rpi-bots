@@ -27,10 +27,10 @@ def query(q):
 	if '-1' in t['query']['pages']:
 		return -1
 	page = t['query']['export']['*']
-	#print (page)
+	print (page)
 	disambig = False
 	for l in page.split('\n'):
-		if re.search('\{\{disambiguation\}\}', l):
+		if re.search('\{\{disambiguation\}\}', l, re.I):
 			disambig = True
 			break
 	
@@ -76,4 +76,3 @@ def query(q):
 		ret += '{}\n'.format(pstring)
 	ret += "*****\n\n"
 	return ret
-	
