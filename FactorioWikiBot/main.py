@@ -57,45 +57,50 @@ def main():
 			logging.debug(
 				"Already processed comment {}, skipping...".format(comid))
 			continue
-		#print(comid)
-		comstr = ""
-		#print (com)
-		matches = re.finditer("linkwiki:([^\n]+)",com,re.I)
-		topics = []
-		for m in matches:
+		cauth = comment.author
+		if cauth.name == creds.uname:
 			logging.debug(
-				"Found match on comment {}: \"{}\"".format(comid, m))
-			topic = "".join([x for x in m.group(1) if 31 < ord(x) < 127])
-			topic = re.sub(r' *$', '', topic)
-			topic = re.sub(r'^ *', '', topic)
-			topics.append(topic)
-			
-		if len(topics) > 0:
-			numhits = 0
-			outstrs = []
-			for t in topics:
-				hitstring = wiki.query(t)
-				outstrs.append(hitstring)
-				if hitstring != -1:
-					numhits += 1
-					logging.info("Query for \"{}\" successful".format(t))
-				else:
-					logging.info("Query for \"{}\" unsuccessful".format(t))
-					
-			if numhits != 0:
-				comstr = ""
-				for i in range(len(outstrs)):
-					if outstrs[i] != -1:
-						comstr += outstrs[i]
-					else:
-						comstr += "> I'm sorry, I didn't find a page titled"
-						comstr += " \"{}\".\n\n".format(topics[i])
-						comstr += "*****\n\n"
-			
-				#print (comstr + sig)
-				comment.reply(comstr + sig)
-				logging.info("Replied to comment {}".format(comid))
+				"Skipping comment with author {}...".format(cauth.name))
+		else:
+			#print(comid)
+			comstr = ""
+			#print (com)
+			matches = re.finditer("linkwiki:([^\n]+)",com,re.I)
+			topics = []
+			for m in matches:
+				logging.debug(
+					"Found match on comment {}: \"{}\"".format(comid, m))
+				topic = "".join([x for x in m.group(1) if 31 < ord(x) < 127])
+				topic = re.sub(r' *$', '', topic)
+				topic = re.sub(r'^ *', '', topic)
+				topics.append(topic)
 				
+			if len(topics) > 0:
+				numhits = 0
+				outstrs = []
+				for t in topics:
+					hitstring = wiki.query(t)
+					outstrs.append(hitstring)
+					if hitstring != -1:
+						numhits += 1
+						logging.info("Query for \"{}\" successful".format(t))
+					else:
+						logging.info("Query for \"{}\" unsuccessful".format(t))
+						
+				if numhits != 0:
+					comstr = ""
+					for i in range(len(outstrs)):
+						if outstrs[i] != -1:
+							comstr += outstrs[i]
+						else:
+							comstr += "> I'm sorry, I didn't find a page titled"
+							comstr += " \"{}\".\n\n".format(topics[i])
+							comstr += "*****\n\n"
+				
+					#print (comstr + sig)
+					comment.reply(comstr + sig)
+					logging.info("Replied to comment {}".format(comid))
+					
 		
 		comlist.append(comid)
 		with open(oldcomments, 'w') as f:
