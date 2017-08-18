@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from tendo import singleton()
+from tendo import singleton
 me = singleton.SingleInstance()
 
 import subprocess
