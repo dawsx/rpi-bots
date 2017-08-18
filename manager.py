@@ -21,7 +21,7 @@ def initproc(d):
 
 base = os.scandir()
 for entry in base:
-	if entry.is_dir() and os.path.is_file("/".join(entry.name, "main.py")):
+	if entry.is_dir() and os.path.isfile("/".join(entry.name, "main.py")):
 		procs.append(initproc(entry.name))
 
 # Waiting loop; every 30 seconds it checks if each of its subprocesses 
