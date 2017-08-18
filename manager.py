@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+from tendo import singleton()
+me = singleton.SingleInstance()
+
 import subprocess
 import time
 import os
@@ -9,22 +12,25 @@ procs = []
 def cleanup():
 	for p in procs:
 		p.terminate()
-		
-dirs = []
-with os.scandir() as base:
-	for entry in base:
-		if entry.is_dir() and entry.name != ".git":
-			dirs.append(entry.name)
-			
-for d in dirs:
-	try:
-		p = subprocess.Popen(["python3", "{}/main.py".format(d)])
-	except:
-		print("No main.py in {}", d)
-		
-	procs.append(p)
 
+def initproc(d):	
+	os.chdir(d)
+	p = subprocess.Popen(["python3", "main.py"])
+	os.chdir("..")
+	return [p,d]
+
+base = os.scandir()
+for entry in base:
+	if entry.is_dir() and os.path.is_file("/".join(entry.name, "main.py")):
+		procs.append(initproc(entry.name))
+
+# Waiting loop; every 30 seconds it checks if each of its subprocesses 
+# is running. If it finds that one has stopped, it relaunches the process
 while True:
-	time.sleep(999)
+	time.sleep(30)
+	for p in procs:
+		if p[0].poll() != None:
+			procs.remove(p)
+			procs.append(initproc(p[1]))
 	
 atexit.register(cleanup)

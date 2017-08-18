@@ -9,16 +9,16 @@ import wiki
 import logging
 import atexit
 
-mydir = "FactorioWikiBot/"
-logfile = mydir + "logs/fwikibot.log"
+logfile = "logs/fwikibot.log"
 FORMAT = '%(asctime)-15s, %(filename)s:%(levelname)s: %(message)s'
 logging.basicConfig(filename = logfile, level = logging.DEBUG, format = FORMAT)
 logging.info('Initializing bot...')
 
-oldcomments = mydir + "oldcomments"
+oldcomments = "oldcomments"
 sig = "^^I ^^am ^^a ^^bot, ^^beep ^^boop ^^| [^^Source](https://github.com/"
 sig += "dawsx/rpi-bots/tree/master/FactorioWikiBot) ^^| ^^Created ^^by ^^u/"
 sig += "thisisdada"
+currcomment = ""
 
 try:
 	f = open(oldcomments, 'r')
@@ -30,7 +30,7 @@ except:
 base = 'https://wiki.factorio.com/api.php?'
 
 def exitfunc():
-	logging.info("Bot has shut down: {}")
+	logging.info("Bot has shut down while processing comment {}".format(currcomment))
 	
 atexit.register(exitfunc)
 
@@ -52,6 +52,7 @@ def main():
 			comlist = comdata.split("\n")
 		com = comment.body
 		comid = comment.id
+		currcomment = comid
 		logging.info("Processing comment {}".format(comid))
 		if comid in set(comlist):
 			logging.debug(
